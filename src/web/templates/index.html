@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Test</title>
+    <title>Data Tables</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+</head>
+<body>
+<br/>
+<div class="container">
+    <h2 style="text-align:center">Github users</h2>
+    <br/>
+    <table class="table">
+        <thead>
+            <tr><th>ID</th><th>USERNAME</th><th>TYPE</th></tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user["id"] }}</td>
+                <td><a href='{{ user["page"] }}'>{{ user["username"] }}</a></td>
+                <td>{{ user["type"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-sm-4">
+            <form action="/" method="post">
+                {% if order_by %}
+                    <input name="order_by" type="hidden" value='{{ order_by }}'>
+                {% endif %}
+                <input name="size" type="text" value='{{ size }}'>
+                <input id="search" name="search" type="submit" role="button"
+                       class="btn btn-dark" value="Paginate"/>
+            </form>
+        </div>
+        <div class="col-md-4 offset-md-4">
+            <form action="/" method="post">
+                <input name="page" type="hidden" value='{{ page }}'>
+                <input name="size" type="hidden" value='{{ size }}'>
+                {% if order_by %}
+                    <input name="order_by" type="hidden" value='{{ order_by }}'>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-4">
+                        {% if 1 == page %}
+                        <a type="button" class="btn btn-dark disabled">Previous</a>
+                        {% else %}
+                        <input id="previous" name="previous" type="submit" role="button"
+                               class="btn btn-dark" value="Previous"/>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4" align="center">
+                        <b>{{ page }}</b>
+                    </div>
+                    <div class="col-md-4">
+                        {% if number_pages == page %}
+                            <a class="btn btn-dark disabled" role="button">Next</a>
+                        {% else %}
+                            <input id="next" name="next" type="submit" role="button"
+                                   class="btn btn-dark" value="Next"/>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <form action="/" method="post">
+        <input name="size" type="hidden" value='{{ size }}'>
+        <input name="page" type="hidden" value='1'>
+        <div class="row align-items-end">
+            <div class="col-md-2 offset-md-8">
+                <select name="order_by" class="form-control">
+                    <option value="id">ID</option>
+                    <option value="username">USERNAME</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input name="sort" type="submit" role="button" class="btn btn-dark btn-block" value="SORT"/>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+    </script>
+</body>
+</html>
