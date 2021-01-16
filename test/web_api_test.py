@@ -1,5 +1,6 @@
 import sqlite3
 import unittest
+import os
 from populate_sqlite.seed import save_github_users_sqlite
 from web.__main__ import create_app
 from web.__main__ import get_total_users
@@ -34,13 +35,6 @@ github_users = [
 
 class TestWebApi(unittest.TestCase):
     def setUp(self) -> None:
-        connection = sqlite3.connect("test.db", uri=True)
-        cursor = connection.cursor()
-
-        self.count_database = cursor.execute("SELECT COUNT() FROM test").fetchone()[0]
-
-        connection.close()
-
         save_github_users_sqlite(github_users, "test.db", "test")
 
         self.app = create_app(database_configuration={
@@ -53,13 +47,13 @@ class TestWebApi(unittest.TestCase):
     def test_get_total_users(self):
         count = get_total_users(database="test.db", table="test")
 
-        self.assertEqual(self.count_database, count)
+        self.assertEqual(len(github_users), count)
 
     def test_profiles(self):
         response = self.client.get("/profiles")
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(self.count_database, len(response.get_json()["result"]))
+        self.assertEqual(len(github_users), len(response.get_json()["result"]))
 
     def test_limit_profiles(self):
         response = self.client.get("/profiles?size=10")
@@ -108,6 +102,17 @@ class TestWebApi(unittest.TestCase):
             "page": "https://github.com/brynary"
         }, response.get_json()["result"][0]
         )
+
+    def tearDown(self) -> None:
+        connection = sqlite3.connect("test.db", uri=True)
+        cursor = connection.cursor()
+
+        cursor.execute("DROP TABLE test")
+
+        connection.commit()
+        connection.close()
+
+        os.remove("test.db")
 
 
 if __name__ == "__main__":
