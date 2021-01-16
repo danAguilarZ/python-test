@@ -1,8 +1,9 @@
+import os
+import requests
 from flask import Flask, jsonify, request, render_template
 from web import args
 import sqlite3
 from web import config
-import requests
 from math import ceil
 
 
@@ -18,7 +19,9 @@ def get_total_users(database: str, table: str) -> int:
 
 
 def create_app(database_configuration: dict, flask_configuration: dict = None) -> Flask:
-    application = Flask(__name__)
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "\\templates"
+
+    application = Flask(__name__, template_folder=dir_path)
     application.config["DEBUG"] = True if not flask_configuration else flask_configuration.get("debug_mode", True)
 
     total = get_total_users(database_configuration["database"], database_configuration["table"])
@@ -28,7 +31,8 @@ def create_app(database_configuration: dict, flask_configuration: dict = None) -
         return "<html><head></head><body><h1>Page Not Found: 404</h1></body></html>"
 
     @application.errorhandler(Exception)
-    def internal_server_error():
+    def internal_server_error(e):
+        print(str(e))
         return "<html><head></head><body><h1>Oops! Internal Server Error, we are working for you</h1></body></html>"
 
     @application.route("/profiles", methods=["GET"])
@@ -55,7 +59,7 @@ def create_app(database_configuration: dict, flask_configuration: dict = None) -
             profiles = cursor.execute(query, tuple(arguments))
         except sqlite3.OperationalError as e:
             print(e)
-            return jsonify([])
+            return jsonify({"result": []})
 
         result = []
 
@@ -71,7 +75,7 @@ def create_app(database_configuration: dict, flask_configuration: dict = None) -
         cursor.close()
         connection.close()
 
-        return jsonify(result)
+        return jsonify({"result": result})
 
     @application.route("/", methods=["GET", "POST"])
     def index():
@@ -96,12 +100,12 @@ def create_app(database_configuration: dict, flask_configuration: dict = None) -
         number_pages = ceil(total / int(request_profiles["size"]))
 
         response = requests.get(
-            "http://127.0.0.1:{0}/profiles".format(args.port),
+            request.url_root + "profiles",
             params=request_profiles
         )
 
         return render_template(
-            "index.html", users=response.json(),
+            "index.html", users=response.json()["result"],
             size=request_profiles["size"],
             page=request_profiles["page"],
             number_pages=number_pages,
