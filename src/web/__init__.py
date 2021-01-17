@@ -31,6 +31,8 @@ try:
 except FileNotFoundError:
     # Default values of database name and table name if config doesn't exist
     config = {
-        "database": "prueba.db",
-        "table": "users"
+        "sqlite": {
+            "database": "heroku.db",
+            "table": "users"
+        }
     }
