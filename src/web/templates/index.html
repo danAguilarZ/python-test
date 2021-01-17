@@ -6,26 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
 <br/>
 <div class="container">
     <h2 style="text-align:center">Github users</h2>
     <br/>
-    <table class="table">
-        <thead>
-            <tr><th>ID</th><th>USERNAME</th><th>TYPE</th></tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
+    <div class="row" style="height: 600px;overflow: scroll;">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
             <tr>
-                <td>{{ user["id"] }}</td>
-                <td><a href='{{ user["page"] }}'>{{ user["username"] }}</a></td>
-                <td>{{ user["type"] }}</td>
+                <th class="col-xs-3" scope="col">AVATAR</th>
+                <th class="col-xs-3" scope="col">ID</th>
+                <th class="col-xs-3" scope="col">USERNAME</th>
+                <th class="col-xs-3" scope="col">TYPE</th>
             </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <img src='{{ user["avatar"] }}' class="img-fluid" alt='{{ user["username"] }}'
+                             style="max-height: 100px; max-width: 100px;">
+                    </td>
+                    <td>{{ user["id"] }}</td>
+                    <td><a href='{{ user["page"] }}'>{{ user["username"] }}</a></td>
+                    <td>{{ user["type"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br/>
     <div class="row">
         <div class="col-sm-4">
             <form action="/" method="post">
@@ -47,10 +62,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         {% if 1 == page %}
-                        <a type="button" class="btn btn-dark disabled">Previous</a>
+                        <a type="button" class="btn btn-dark disabled btn-block">Previous</a>
                         {% else %}
                         <input id="previous" name="previous" type="submit" role="button"
-                               class="btn btn-dark" value="Previous"/>
+                               class="btn btn-dark btn-block" value="Previous"/>
                         {% endif %}
                     </div>
                     <div class="col-md-4" align="center">
@@ -58,10 +73,10 @@
                     </div>
                     <div class="col-md-4">
                         {% if number_pages == page %}
-                            <a class="btn btn-dark disabled" role="button">Next</a>
+                            <a class="btn btn-dark disabled btn-block" role="button">Next</a>
                         {% else %}
                             <input id="next" name="next" type="submit" role="button"
-                                   class="btn btn-dark" value="Next"/>
+                                   class="btn btn-dark btn-block" value="Next"/>
                         {% endif %}
                     </div>
                 </div>
@@ -85,11 +100,11 @@
         </div>
     </form>
 </div>
-
+<br/>
 <script>
     $(document).ready( function () {
     $('#myTable').DataTable();
-} );
-    </script>
+    } );
+</script>
 </body>
 </html>
