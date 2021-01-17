@@ -9,6 +9,7 @@ setup(
     packages=find_packages("src"),
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     package_dir={"": "src"},
+    package_data={'web.templates': ['index.html']},
     version="1.0.0",
     python_requires=">=3.5",
     install_requires=[
