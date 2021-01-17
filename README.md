@@ -1,7 +1,7 @@
 ---
 # Python Test
 
-Example of a flask application that connect to SQLite Database and the API of GitHub.
+Example of a flask application that connect to SQLite Database and example of a script that connect to the API of GitHub.
 
 ---
 ## Prerequisites
