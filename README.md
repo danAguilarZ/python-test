@@ -133,3 +133,13 @@ $ python -m web --port 500
  * Debug mode: off
  * Running on http://127.0.0.1:500/ (Press CTRL+C to quit)
 ~~~
+
+### Test API
+
+In an web explorer put the next URI:
+
+~~~
+http://127.0.0.1:500/
+~~~
+
+![](Index.png)
