@@ -19,7 +19,7 @@ def get_total_users(database: str, table: str) -> int:
 
 
 def create_app(database_configuration: dict, flask_configuration: dict = None) -> Flask:
-    dir_path = os.path.dirname(os.path.realpath(__file__)) + "\\templates"
+    dir_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates")
 
     application = Flask(__name__, template_folder=dir_path)
     application.config["DEBUG"] = True if not flask_configuration else flask_configuration.get("debug_mode", True)
@@ -27,7 +27,8 @@ def create_app(database_configuration: dict, flask_configuration: dict = None) -
     total = get_total_users(database_configuration["database"], database_configuration["table"])
 
     @application.errorhandler(404)
-    def not_found():
+    def not_found(e):
+        print(str(e))
         return "<html><head></head><body><h1>Page Not Found: 404</h1></body></html>"
 
     @application.errorhandler(Exception)
@@ -119,4 +120,4 @@ def create_app(database_configuration: dict, flask_configuration: dict = None) -
 if __name__ == '__main__':
     app = create_app(config.get("sqlite"), config.get("flask", None))
 
-    app.run(port=args.port, debug=False)
+    app.run(host='0.0.0.0', port=args.port, debug=False)
